@@ -1,7 +1,12 @@
 package com.test_java.lecture6_반복적인테스트;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
@@ -59,8 +64,67 @@ public class studyTest6 {
         System.out.println(study.getLimit());
     }
 
+    /**
+     * CsvSource를 이용해서 여러개의 인자를 동시에 받기
+     */
+    @DisplayName("스터디 만들기")
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '스프링 스터디'"})
+    void parameterizedTest3(Integer limit, String name){
+        Study study = new Study(limit,name);
+        System.out.println(study);
+
+
+    }
+
+    /**
+     * 여러개의 인자를 받아 올 때 객체로 만들어서 사용할 때
+     */
+    @DisplayName("스터디 만들기")
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '스프링 스터디'"})
+    void parameterizedTest4(ArgumentsAccessor argumentsAccessor){
+        Study study = new Study(
+                argumentsAccessor.getInteger(0),
+                argumentsAccessor.getString(1)
+        );
+        System.out.println(study);
+    }
+
+    /**
+     * 여러개의 인자를 받아 올 때 커스텀한 Argument를 만들어서 사용 할 때
+     */
+    @DisplayName("스터디 만들기")
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '스프링 스터디'"})
+    void parameterizedTest5(@AggregateWith(StudyAggregator.class) Study study){
+        System.out.println(study);
+    }
+
+    /**
+     * Aggregator 만들 때 제약 조건은 public 이거나 inner static 이여야 한다.
+     */
+    static class StudyAggregator implements ArgumentsAggregator{
+
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context)
+                throws ArgumentsAggregationException {
+            return new Study(accessor.getInteger(0),accessor.getString(1));
+        }
+    }
+
+    /**
+     * ArgumentConverter는 하나의 argument에만 적용이 된다.
+     */
     static class StudyConverter extends SimpleArgumentConverter{
 
+        /**
+         * Object source에는 ValueSource의 값들이 하나씩 들어온다.
+         * @param source
+         * @param targetType
+         * @return
+         * @throws ArgumentConversionException
+         */
         @Override
         protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
             assertEquals(Study.class, targetType,"Can only convert to Study");
