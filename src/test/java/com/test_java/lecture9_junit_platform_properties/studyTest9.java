@@ -3,10 +3,7 @@ package com.test_java.lecture9_junit_platform_properties;
 import com.test_java.lecture5_커스텀태킹.FastTest;
 import com.test_java.lecture5_커스텀태킹.SlowTest;
 import com.test_java.lecture7_테스트인스턴스.Study;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,12 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @Disabled 무시하고 실행하기
  * 테스트 이름 표기 전략 실행
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class studyTest9 {
 
     int value = 0;
 
     @FastTest
-    @DisplayName("스터디 만들기 fast")
+    //@DisplayName("스터디_만들기_fast")
     void create_new_study(){
         com.test_java.lecture7_테스트인스턴스.Study actual = new Study(++value);
         assertThat(actual.getLimit()).isGreaterThan(0);
