@@ -10,5 +10,7 @@ public interface MemberService {
 
     Optional<Member> findById(Long memberId);
 
+    void validate(Long memberId);
+
 }
 

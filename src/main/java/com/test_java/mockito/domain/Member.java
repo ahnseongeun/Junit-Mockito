@@ -1,5 +1,6 @@
 package com.test_java.mockito.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,5 +17,11 @@ public class Member {
     private Long id;
 
     private String email;
+
+    @Builder
+    public Member(Long id, String email){
+        this.id = id;
+        this.email = email;
+    }
 
 }
