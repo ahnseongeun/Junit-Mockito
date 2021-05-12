@@ -12,5 +12,8 @@ public interface MemberService {
 
     void validate(Long memberId);
 
+    void notify(Study study);
+
+    void notify(Optional<Member> member);
 }
 

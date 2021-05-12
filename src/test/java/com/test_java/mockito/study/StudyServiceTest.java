@@ -6,6 +6,7 @@ import com.test_java.mockito.domain.Study;
 import com.test_java.mockito.member.MemberService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -176,6 +177,9 @@ class StudyServiceTest {
 
     }
 
+    /**
+     * Mock 객체 테스트 시나리오
+     */
     @Test
     void createStudyService6(){
         Study study = new Study(10, "테스트");
@@ -192,6 +196,32 @@ class StudyServiceTest {
         studyService.createNewStudy(1L,study);
         assertNotNull(study.getOwner());
         assertEquals(member.getId(),study.getOwner());
+
+        /**
+         * memberService.notify() 호출되었지는 확인 하는 방법
+         */
+        verify(memberService, times(1)).notify(study);
+        verify(memberService, times(1)).notify(Optional.of(member));
+        verify(memberService, never()).validate(any());
+
+        /**
+         * 더이상 어떠한 인터렉션이 발생되서는 안된다.
+         */
+        verifyNoMoreInteractions(memberService);
+
+
+
+        /**
+         * 테스트가 원하는 순서로 호출 되었는지 확인하는 방법
+         */
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(Optional.of(member));
+
+
+
     }
+
+
 
 }
