@@ -37,6 +37,10 @@ public class Study {
         this.ownerId = ownerId;
     }
 
+    public Long getOwner(){
+        return ownerId;
+    }
+
     public void open() {
         this.openedDateTime = LocalDateTime.now();
         this.status = StudyStatus.OPENED;
